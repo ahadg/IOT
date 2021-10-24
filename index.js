@@ -6,6 +6,8 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
+global.clients = []
+
 dotenv.config({path:'./config.env'});
 require(`./db/conn`);
 
@@ -14,7 +16,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(require('./router/user'));
 app.use(require('./router/chat'));
 app.use(require('./router/activity'));
-
 const WebSocket = require("ws");
 const http = require("http").createServer(app);
 const wss = new WebSocket.Server({ server: http });
@@ -24,6 +25,9 @@ const connectws = require('./websocket/websocket')
 connectws(wss)
 // mqtt
 require('./mqtt/mqtt')
+//
+// mqtt publisher for testing
+//require('./mqtt/mqttPublisher')
 
 app.use(express.static(path.join(__dirname, "/client/build")));
   app.get("*", (req, res) =>
