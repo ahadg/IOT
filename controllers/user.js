@@ -102,7 +102,7 @@ if(userlogin){
     res.json({message:"user sign in succefully",token,userlogin});
     }
     }else{
-        res.status(400).json({error:"in valid credentials"});
+        res.status(400).json({error:"Invalid credentials"});
     }
 } 
 catch(err){

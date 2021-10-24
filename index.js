@@ -30,10 +30,10 @@ app.use(express.static(path.join(__dirname, "/client/build")));
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
   );
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 http.listen(PORT, () => {
     console.log(
-      `Server is running on PORT${PORT} in ${process.env.NODE_ENV} mode`
+      `Server is running on PORT${PORT}`
     );
 });
   
