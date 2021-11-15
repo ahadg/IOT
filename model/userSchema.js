@@ -11,11 +11,11 @@ const userSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
-    Phone_Number:{
-        type:String,
-        required:true,
-        unique:true
-    },
+    // Phone_Number:{
+    //     type:String,
+    //     required:true,
+    //     unique:true
+    // },
     Password:{
         type:String,
         unique:true
@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
         type : Boolean,
         default : false
     },
+    createdby : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    }
 });
 
 userSchema.pre('save',async function(next){

@@ -13,10 +13,22 @@ exports.getUserMessage = async (req, res) => {
     }
 }
 
+exports.updatereadstatus = async (req, res) => {
+  try {
+    console.log(req.user)
+    const chat = await Chat.findOneAndUpdate({senderid : req.body.id},{unread : true});
+    res.status(200).json({
+      success : 'ok',
+    })
+  } catch (error) {
+      res.status(400).json({error:"Error in server"});
+  }
+}
+
 exports.getUserMessageById = async (req, res) => {
   try {
     console.log(req.body.id)
-    const chat = await Chat.findOne({senderid : req.body.id});
+    const chat = await Chat.findOneAndUpdate({senderid : req.body.id},{unread : false});
     res.status(200).json({
       success : 'ok',
       chat
@@ -43,7 +55,7 @@ exports.getUserNonResponse = async (req, res) => {
 
 exports.getAllChat = async (req, res) => {
   try {
-    console.log(req.user)
+    console.log('getchats',req.user)
     const chat = await Chat.find().populate('senderid');
     console.log(chat)
     res.status(200).json({
@@ -60,7 +72,7 @@ exports.getAllChat = async (req, res) => {
 exports.wsSaveMessage = async (message,reciever_id,senderid,info) => {
    console.log('id',reciever_id,senderid,message,info)
    const chat = await Chat.findOne({ users: {'$all' :  [reciever_id,senderid]}});
-  console.log(chat)
+   //console.log(chat)
    if(chat) {
      //console.log('found',chat)
      await Chat.findOneAndUpdate({ users: { '$all' :  [ reciever_id, senderid]}},

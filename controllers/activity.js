@@ -12,6 +12,21 @@ exports.wsSaveActivity = async (data) => {
     }
 }
 
+exports.getActivities  = async (req,res) => {
+    try {
+        console.log('called activities')
+        var result = new Date();
+        result.setDate(result.getDate() - 1)
+        console.log('date',result)
+        const activities =  await Activity.find({ created : {
+            $gte: result, 
+        }}).sort({ $natural: -1 })
+        res.send({activities})
+    } catch (error) {
+        res.status(400).json({error:"Error in server"});
+    }
+}
+
 exports.getactivitiesbydate = async (req,res) => {
     try {
       console.log(req.body)

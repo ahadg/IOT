@@ -11,6 +11,10 @@ const chatSchema = new Schema({
   subject : {
     type : String
   },
+  unread : {
+    type : Boolean,
+    default : true
+  },
   messages: [{
       title : {
         type : String

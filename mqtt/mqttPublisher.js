@@ -2,8 +2,8 @@
 var mqtt = require('mqtt')
 var client = mqtt.connect('mqtt://mqtt.coltivo.io:1883')
 //var client = mqtt.connect('mqtt://localhost:1883')
-var topic = 'Raspberrypi/myproject/alessio/aqua'
-var commandtopic = 'Raspberrypi/myproject/alessio/command'
+var topic = 'deviceinfos'
+var commandtopic = 'commands'
 
 let fans = ['','on','off']
 let drawer = ['','open','close']

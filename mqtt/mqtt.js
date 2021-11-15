@@ -2,8 +2,8 @@ const mqtt = require('mqtt')
 //const client = mqtt.connect('mqtt://localhost:1883')
 //const client = mqtt.connect('mqtt://test.mosquitto.org:1883')
 const client = mqtt.connect('mqtt://mqtt.coltivo.io:1883')
-const topic = 'Raspberrypi/myproject/alessio/aqua'
-const commandtopic = 'Raspberrypi/myproject/alessio/command'
+const topic = 'deviceinfos'
+const commandtopic = 'commands'
 global.mqttclient = client
 
 const Onmessage = (topic,message) => {
@@ -11,10 +11,10 @@ const Onmessage = (topic,message) => {
     console.log('listening',message)
     //console.log('global client',global.clients)
     console.log('recieved from this topic',topic)
-    if(topic === "Raspberrypi/myproject/alessio/command") {
+    if(topic === "commands") {
         console.log('command topic')
     }
-    else if(topic === "Raspberrypi/myproject/alessio/aqua") {
+    else if(topic === "deviceinfos") {
         global.clients.map((client) => {
             client.ws.send(JSON.stringify({
                 "type" : "mqtt",
@@ -47,6 +47,12 @@ exports.mqttcommandpublish = (id,msg) => {
     console.log(msg)
     try {
         client.publish(commandtopic, JSON.stringify(msg) )  
+        global.clients.map((client) => {
+            client.ws.send(JSON.stringify({
+                "type" : "command",
+                message : {...msg,date : new Date()}
+            }))
+        })
         //Onmessage(commandtopic,msg) 
     } catch (error) {
         console.log(error)

@@ -20,6 +20,19 @@ exports.getalluser = async (req, res) => {
     }
 }
 
+
+exports.deleteuser = async (req, res) => {
+  try {
+    console.log(req.params)
+    const users = await User.findByIdAndDelete(req.params.id)
+      res.status(200).json({
+        success: "true",
+      });
+  } catch (error) {
+      res.status(400).json({error:"Error in server"});
+  }
+}
+
 exports.searchUser = async (req, res) => {
   console.log(req.body)
   var regex = new RegExp([req.body.search].join(""), "i");
@@ -52,28 +65,26 @@ exports.getuser = async (req, res) => {
   }
 
 exports.register = async (req,res)=>{
+    console.log('user',req.user)
     let data;
 try{
     data = req.body;
-    const {Username,Email,Password,Confirm_Pass,Phone_Number,usertype} = data
+    const {Username,Email,Password,Confirm_Pass,usertype} = data
     console.log('data',data)
-    if(!Username || !Email || !Phone_Number || !Password || !Confirm_Pass){
+    if(!Username || !Email || !Password || !Confirm_Pass){
         return res.status(400).json({error: "fill properly"});
     }
    const emailExist = await User.findOne({Email});
-   const phoneExist = await User.findOne({Phone_Number});
+   //const phoneExist = await User.findOne({Phone_Number});
     if(emailExist){
         return res.status(400).json({error: "email already exist"});
     }
-    else if(phoneExist){
-        return res.status(400).json({error: "Phone already exist"});
-    }
     else if( Password != Confirm_Pass){
-        return res.status(400).json({error: "password is not matchingt"});
+        return res.status(400).json({error: "password is not matching"});
     } 
     else{
         let user;
-        user = new User({Username,Email,Phone_Number,Password,usertype});
+        user = new User({Username,Email,Password,usertype,createdby : req.user});
         await user.save();
         res.status(201).json({message:"user register successfully"});
     }
@@ -95,7 +106,7 @@ let userlogin =await  User.findOne({Email : email})
 if(userlogin){
     const isMatch = await bcrypt.compare(password,userlogin.Password);
     token = await userlogin.generateAuthToken();
-    userlogin =await  User.findOne({Email :  email}).select('Username Email Phone_Number CNIC usertype approved');
+    userlogin =await  User.findOne({Email :  email}).select('Username Email Phone_Number CNIC usertype approved createdby');
     if(!isMatch){
         return res.status(400).json({error:"in valid credentials"});
     }else{
